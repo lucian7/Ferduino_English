@@ -241,7 +241,7 @@ void mainScreen(boolean refreshAll=false)
   if (falha_tpa == true)
   {             
     setFont(LARGE, 255, 0, 0, 0, 0, 0);
-    myGLCD.print(tabela_textos[86], 250, 180);           // Sinaliza falha durante uma TPA // tabela_textos[86] = "FALHA!"
+    myGLCD.print(tabela_textos[86], 250, 180);           // Sinaliza falha durante uma TPA // tabela_textos[86] = "FAILURE!"
   }  
 }
 
