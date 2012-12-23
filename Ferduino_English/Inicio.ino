@@ -44,7 +44,7 @@ void mainScreen(boolean refreshAll=false)
   {
     blueLed = bled_out;
     ledLevel = LedToPercent(bled_out);
-    oldval = "A: " + String(ledLevel) + "%  ";
+    oldval = "B: " + String(ledLevel) + "%  ";
     char bufferB[9];
     oldval.toCharArray(bufferB, 11);
     s= 117 + (bled_out*1.3);
@@ -65,7 +65,7 @@ void mainScreen(boolean refreshAll=false)
   {
     whiteLed = wled_out;
     ledLevel = LedToPercent(wled_out);
-    oldval = "B: " + String(ledLevel) + "%  ";
+    oldval = "W: " + String(ledLevel) + "%  ";
     char bufferW[9];
     oldval.toCharArray(bufferW, 11);
     s= 117 + (wled_out*1.3);
