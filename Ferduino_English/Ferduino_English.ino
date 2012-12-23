@@ -339,13 +339,9 @@ int tpa_status;
 //*****************************************************************************************
 
 boolean Ethernet_Shield = true; // Altere para "false" caso não tenha um Ethernet Shield conectado ao Arduino.
-/*
+
 #define FEED    "xxxxx"               // Número do projeto(cosm.com).
  #define APIKEY  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" //Senha do projeto(cosm.com)
- */
- 
-#define FEED    "69337"               // Número do projeto status aquários (cosm.com)
-#define APIKEY  "_-PYRtR5g5HQL40xy9oV7BY1jPuSAKwrTm5manQ2MlNhRT0g" //Senha do projeto(cosm.com) 
 
 static byte mymac[] = {0x54, 0x55, 0x58, 0x10, 0x00, 0x26}; // Este mac deve ser único na rede.
 static byte myip[] = {192, 168, 2, 105};
