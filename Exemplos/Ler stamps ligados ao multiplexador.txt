@@ -1,0 +1,445 @@
+// Este programa faz a leitura de 4 "stamps" da "Atlas scientific" ligados a um multiplexador.
+
+//http://atlas-scientific.com/product_pages/embedded/rs-232.html
+//http://atlas-scientific.com/product_pages/embedded/ph.html
+//http://atlas-scientific.com/product_pages/embedded/orp.html
+//http://atlas-scientific.com/product_pages/embedded/ec.html
+
+// Este arquivo deve ser salvo com a extensão .ino
+
+const int multiplexPIN1 = A14; // S0
+const int multiplexPIN2 = A15; //S1
+
+char inData[150];
+char *inParse[150];
+int index = 0;
+int contador = 0;
+boolean stringComplete = false;
+
+int  int_valor_1 = 0;
+float  float_valor_1 = 0;
+
+short ph1=0; //Y0
+short ph2=1; //Y1
+short orp=2; //Y2
+short ec=3; //Y3
+
+int ORP = 0;
+int DEN = 0;
+float PHA = 0.0;
+float PHR = 0.0;
+
+void setup()
+{                                                              
+  Serial.begin(38400);                                                      
+  Serial3.begin(38400);
+  pinMode(multiplexPIN1, OUTPUT);
+  pinMode(multiplexPIN2, OUTPUT);
+
+  Open_channel(ph1);
+  Serial3.print("L0");
+  Serial3.print('\r');
+  delay(500);
+  Serial3.flush();
+  Serial3.print("c");
+  Serial3.print('\r');
+
+  Open_channel(ph2);
+  Serial3.print("L0");
+  Serial3.print('\r');
+  delay(500);
+  Serial3.flush();
+  Serial3.print("c");
+  Serial3.print('\r');
+
+  Open_channel(orp);
+  Serial3.print("L0");
+  Serial3.print('\r');
+  delay(500);
+  Serial3.flush();
+  Serial3.print("c");
+  Serial3.print('\r');
+/*    
+   Open_channel(ec);
+   Serial3.print("L0");
+   Serial3.print('\r');
+   delay(500);
+   Serial3.flush();
+   Serial3.print("c");
+   Serial3.print('\r');*/
+}
+long millis_antes = 0;
+
+void loop()
+{ 
+  if((millis() - millis_antes) >= 10000)
+  {
+    millis_antes = millis();
+    check_parametro_ph_aquario();
+    check_parametro_ph_reator();
+    check_parametro_orp(); 
+   // check_parametro_densidade();
+  }
+}
+
+void check_parametro_ph_aquario()
+{
+  char *str;    
+  int count = 0;
+
+  Serial3.flush();
+
+  Open_channel(ph1);
+  do
+  {
+    if (Serial3.available()>3) 
+    {
+      char inChar = Serial3.read(); 
+      inData[index] = inChar; 
+      index++;     
+      if (inChar == '\r') 
+      {
+        contador ++;
+      }
+      if(contador == 20)
+      {
+        inData[index] = '\0';
+        contador = 0;  
+        stringComplete = true;
+      }
+    }
+  }
+  while(stringComplete == false);
+
+  for (int i= 0; i <= index; i++)
+  {
+    if (inData[i] == '\r') 
+    {
+      inData[i] = ',';
+    }
+  }
+  index = 0;
+  char *p = inData;
+
+  if (stringComplete == true) 
+  {
+
+    while ((str = strtok_r(p, ",", &p)) != NULL)
+    {   
+      inParse[count] = str;
+      count++;      
+    }
+    p = NULL;
+
+    for(int i= 12;i <=19; i++)
+    {
+      float_valor_1 += atof(inParse[i]);
+    }
+    float_valor_1 /= 8;
+
+    stringComplete = false; 
+    PHA = float_valor_1;
+    Serial.print("PH do aquario:");
+    Serial.println(PHA);
+    Serial.print("[");
+    Serial.print(inParse[12]);
+    Serial.print(", ");
+    Serial.print(inParse[13]);
+    Serial.print(", ");
+    Serial.print(inParse[14]);
+    Serial.print(", ");
+    Serial.print(inParse[15]);
+    Serial.print(", ");
+    Serial.print(inParse[16]);
+    Serial.print(", ");
+    Serial.print(inParse[17]);
+    Serial.print(", ");
+    Serial.print(inParse[18]); 
+    Serial.print(", ");
+    Serial.print(inParse[19]);
+    Serial.println("]");
+    float_valor_1 = 0;
+  }
+}
+
+void check_parametro_ph_reator()
+{
+  char *str;    
+  int count = 0;
+
+  Serial3.flush();
+
+  Open_channel(ph2);
+  do
+  {
+    if (Serial3.available()>3) 
+    {
+      char inChar = Serial3.read(); 
+      inData[index] = inChar; 
+      index++;     
+      if (inChar == '\r') 
+      {
+        contador ++;
+      }
+      if(contador == 20)
+      {
+        inData[index] = '\0';
+        contador = 0;  
+        stringComplete = true;
+      }
+    }
+  }
+  while(stringComplete == false);
+
+  for (int i= 0; i <= index; i++)
+  {
+    if (inData[i] == '\r') 
+    {
+      inData[i] = ',';
+    }
+  }
+  index = 0;
+  char *p = inData;
+
+  if (stringComplete == true) 
+  {
+
+    while ((str = strtok_r(p, ",", &p)) != NULL)
+    {   
+      inParse[count] = str;
+      count++;      
+    }
+    p = NULL;
+
+    for(int i= 12;i <=19; i++)
+    {
+      float_valor_1 += atof(inParse[i]);
+    }
+    float_valor_1 /= 8;
+
+    stringComplete = false; 
+    PHR = float_valor_1;
+    Serial.print("PH do reator:");
+    Serial.println(PHR); 
+    Serial.print("[");
+    Serial.print(inParse[12]);
+    Serial.print(", ");
+    Serial.print(inParse[13]);
+    Serial.print(", ");
+    Serial.print(inParse[14]);
+    Serial.print(", ");
+    Serial.print(inParse[15]);
+    Serial.print(", ");
+    Serial.print(inParse[16]);
+    Serial.print(", ");
+    Serial.print(inParse[17]);
+    Serial.print(", ");
+    Serial.print(inParse[18]); 
+    Serial.print(", ");
+    Serial.print(inParse[19]);
+    Serial.println("]");
+    float_valor_1 = 0;
+  }
+}
+
+void check_parametro_orp()
+{
+  char *str;    
+  int count = 0;
+
+  Serial3.flush();
+
+  Open_channel(orp);
+  do
+  {
+    if (Serial3.available()>3) 
+    {
+      char inChar = Serial3.read(); 
+      inData[index] = inChar; 
+      index++;     
+      if (inChar == '\r') 
+      {
+        contador ++;
+      }
+      if(contador == 20)
+      {
+        inData[index] = '\0';
+        contador = 0;  
+        stringComplete = true;
+      }
+    }
+  }
+  while(stringComplete == false);
+
+  for (int i= 0; i <= index; i++)
+  {
+    if (inData[i] == '\r') 
+    {
+      inData[i] = ',';
+    }
+  }
+  index = 0;
+  char *p = inData;
+
+  if (stringComplete == true) 
+  {
+
+    while ((str = strtok_r(p, ",", &p)) != NULL)
+    {   
+      inParse[count] = str;
+      count++;      
+    }
+    p = NULL;
+
+    for(int i= 12;i <=19; i++)
+    {
+      int_valor_1 += atoi(inParse[i]);
+    }
+    int_valor_1 /= 8;
+
+    stringComplete = false; 
+    ORP = int_valor_1;
+    Serial.print("ORP:");
+    Serial.println(ORP); 
+    Serial.print("[");
+    Serial.print(inParse[12]);
+    Serial.print(", ");
+    Serial.print(inParse[13]);
+    Serial.print(", ");
+    Serial.print(inParse[14]);
+    Serial.print(", ");
+    Serial.print(inParse[15]);
+    Serial.print(", ");
+    Serial.print(inParse[16]);
+    Serial.print(", ");
+    Serial.print(inParse[17]);
+    Serial.print(", ");
+    Serial.print(inParse[18]); 
+    Serial.print(", ");
+    Serial.print(inParse[19]);
+    Serial.println("]");
+    int_valor_1 = 0;
+  }
+}
+
+void check_parametro_densidade()
+{
+  char *str;    
+  int count = 0;
+
+  Serial3.flush();
+
+  Open_channel(ec);
+  do
+  {
+    if (Serial3.available()>0) 
+    {
+      char inChar = Serial3.read(); 
+      inData[index] = inChar; 
+      index++;     
+      if (inChar == '\r') 
+      {
+        contador ++;
+      }
+      if(contador == 20)
+      {
+        inData[index] = '\0';
+        contador = 0;  
+        stringComplete = true;
+      }
+    }
+  }
+  while(stringComplete == false);
+
+  for (int i= 0; i <= index; i++)
+  {
+    if (inData[i] == '\r') 
+    {
+      inData[i] = ',';
+    }
+  }
+  index = 0;
+  char *p = inData;
+
+  if (stringComplete == true) 
+  {
+
+    while ((str = strtok_r(p, ",", &p)) != NULL)
+    {   
+      inParse[count] = str;
+      count++;      
+    }
+    p = NULL;
+
+    for(int i= 12;i <=19; i++)
+    {
+      int_valor_1 += atoi(inParse[i]);
+    }
+    int_valor_1 /= 8;
+
+    stringComplete = false; 
+    DEN = int_valor_1;
+    Serial.print("Densidade");
+    Serial.println(DEN); 
+    Serial.print("[");
+    Serial.print(inParse[12]);
+    Serial.print(", ");
+    Serial.print(inParse[13]);
+    Serial.print(", ");
+    Serial.print(inParse[14]);
+    Serial.print(", ");
+    Serial.print(inParse[15]);
+    Serial.print(", ");
+    Serial.print(inParse[16]);
+    Serial.print(", ");
+    Serial.print(inParse[17]);
+    Serial.print(", ");
+    Serial.print(inParse[18]); 
+    Serial.print(", ");
+    Serial.print(inParse[19]);
+    Serial.println("]");
+    int_valor_1 = 0;
+  }
+}
+
+void Open_channel(short channel)
+{
+  switch (channel) 
+  {
+  case 0:
+    //open channel Y0
+    //S0=0
+    //S1=0
+    digitalWrite(multiplexPIN1, LOW);
+    digitalWrite(multiplexPIN2, LOW);
+    break;
+
+  case 1:
+    //open channel Y1
+    //S0=1
+    //S1=0
+    digitalWrite(multiplexPIN1, HIGH);
+    digitalWrite(multiplexPIN2, LOW);
+    break;
+
+  case 2:
+    //open channel Y2
+    //S0=0
+    //S1=1
+    digitalWrite(multiplexPIN1, LOW);
+    digitalWrite(multiplexPIN2, HIGH);
+    break;
+
+  case 3:
+    //open channel Y3
+    //S0=1
+    //S1=1
+    digitalWrite(multiplexPIN1, HIGH);
+    digitalWrite(multiplexPIN2, HIGH);
+    break;
+  }
+  Serial3.print('\r');
+  return;
+}
+
+
