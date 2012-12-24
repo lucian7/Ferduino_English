@@ -1,17 +1,17 @@
-****Ferduino controlador de aquários****
+Ferduino aquarium controller **** ****
 
-Este programa é software livre; Você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU (General Public License) como publicada pela Free Software Foundation versão 3 da licença, ou (por sua opção) qualquer versão posterior. Este programa é distribuído na esperança que seja útil, mas sem qualquer garantia; sem mesmo a garantia implícita de comercialização ou propósito particular. Consulte o GNU General Public License para mais detalhes.
+This program is a free software: you can redistribute it and / or modify it under the terms of the GNU (General Public License) as published by the Free Software Foundation version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or particular purpose. See the GNU General Public License for more details.
 
-Funções implementadas até o momento.
+Functions implemented.
 
-Controle para duas cores de "LEDs" independentes; Controle de temperatura; Controle de PH; Controle de ORP; Mensuração de densidade; Trocas de água automática; Controle de reposição de água; Gráfico de PH; Gráfico de ORP; Armazenamento de parâmetros no cartão SD; Envio de dados para o cosm.com; Dosagem automática de elementos químicos; Temporizadores.
+Control of two "LEDs" channels, temperature control, pH control, ORP Control, Measurement of density; Exchanges Automatic water, control water replacement; Chart PH; Chart ORP; storage parameters on the card SD; Sending data to cosm.com; automatic dosing of chemicals; Timers.
 
-Em breve:
+In brief:
 
-Interface com o PCF8575; "Wavemaker"; Calibração das sondas de PH, ORP e densidade através da tela; Efeitos na iluminação como nuvens e relâmpagos; Medidor de consumo elétrico.
+Interface to PCF8575, "Wavemaker"; calibration of probes PH, ORP and density across the screen, the lighting effects like clouds and lightning; meter electrical consumption.
 
-Sugestões de novas funções são bem vindas.
+Suggestions for new features are welcome.
 
-Veja os parâmetros em tempo real.
+See parameters in real time.
 
 https://cosm.com/feeds/69337
